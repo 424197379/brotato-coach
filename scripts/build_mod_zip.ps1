@@ -40,7 +40,29 @@ Copy-Item -LiteralPath (Join-Path $RuleSource "rule-pack-0.1.0.json") -Destinati
 if (Test-Path $ZipPath) {
     Remove-Item -LiteralPath $ZipPath -Force
 }
-Compress-Archive -LiteralPath (Join-Path $BuildRoot "mods-unpacked") -DestinationPath $ZipPath -CompressionLevel Optimal -Force
+
+# Compress-Archive writes Windows path separators into ZIP entry names. Godot
+# ModLoader validates portable ZIP paths and rejects those archives.
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$archive = [System.IO.Compression.ZipFile]::Open(
+    $ZipPath,
+    [System.IO.Compression.ZipArchiveMode]::Create
+)
+try {
+    Get-ChildItem -LiteralPath $BuildRoot -Recurse -File | ForEach-Object {
+        $entryName = $_.FullName.Substring($ResolvedBuildRoot.Length).TrimStart("\", "/").Replace("\", "/")
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
+            $archive,
+            $_.FullName,
+            $entryName,
+            [System.IO.Compression.CompressionLevel]::Optimal
+        ) | Out-Null
+    }
+}
+finally {
+    $archive.Dispose()
+}
 
 if (Test-Path $StageDir) {
     $ResolvedStage = (Resolve-Path $StageDir).Path

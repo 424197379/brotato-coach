@@ -13,6 +13,16 @@
 游戏内不调用大语言模型，不联网。分析核心采用确定性、可解释、可测试的离线规则引擎；
 数据只在商店、分析请求和结算边界低频采集。
 
+## 致谢与来源边界
+
+本项目显著参考了 Brotato RunTracker 的思路和可观察行为：波次级聚合记录、商店/结算生命周期、
+武器上一波伤害、经济与属性趋势等设计都受 RunTracker 启发。RunTracker 也作为开发期黄金样本
+来源之一，帮助确认哪些局内数据对复盘最有价值。
+
+土豆教练不捆绑 RunTracker 源码，也不把 RunTracker 作为运行时依赖；实现采用独立代码和独立
+规则数据。相关研究记录见 [RunTracker 研究](docs/research/RUNTRACKER_NOTES.md) 和
+[代码来源边界](docs/research/CODE_PROVENANCE.md)。
+
 ## MVP 状态
 
 `v0.1.0-mvp` 已实现：
@@ -24,17 +34,28 @@
 - 明文 JSONL 轻量记录器
 - 外部样本分析 CLI
 
-自动验收结果为 **35 PASS / 0 FAIL / 0 GAP**。当前发布是预发布版，尚待维护者环境完成
-Brotato 实机加载验证。
+自动验收结果为 **35 PASS / 0 FAIL / 0 GAP**。当前发布是预发布版；维护者环境已确认
+ModLoader 能识别并加载 ZIP，三处 UI 扩展完成安装且无土豆教练错误。更完整的实机游玩验证仍在推进。
+
+## 功能概览
+
+- **商店建议**：读取当前商店候选、实际价格、锁定状态和玩家材料，输出立即购买、锁定、
+  稍后购买或跳过建议。
+- **属性诊断**：指出当前最重要的输出、生存、回复、移动或经济缺口，并附带目标区间。
+- **未来规划**：同时给出未来 3 波和未来 5 波的发展目标。
+- **结算复盘**：读取本局明文 JSONL 事件，比较生命、护甲、移速、输出、诅咒和武器贡献趋势；
+  没有历史记录时降级为最终状态复盘。
+- **外部回归工具**：可对黄金样本生成确定性 JSON 和 Markdown 报告，便于调试规则。
 
 ## 安装
 
-1. 完全退出 Brotato。
-2. 从 [GitHub Releases](https://github.com/424197379/brotato-coach/releases) 下载
-   `BrotatoCoach.zip`。
-3. 备份 Brotato 存档和 `mod_user_profiles.json`。
-4. 通过 Brotato ModLoader 注册本地 ZIP。
-5. 启动游戏后检查商店、暂停菜单和结算界面的土豆教练按钮。
+常规公开安装方案将通过 Steam 创意工坊发布：
+
+- Steam 创意工坊链接：待补充
+
+当前预发布 ZIP 主要用于维护者验证。Brotato 集成版的 ModLoader 当前只枚举 Steam API 返回的
+已订阅创意工坊目录；本地验证时，需要把 `BrotatoCoach.zip` 与一个已订阅项目目录并列放置，
+再由当前 ModLoader 配置引用该 ZIP。公开用户请等待 Steam 创意工坊版本。
 
 如果 ModLoader 日志出现错误，请在 GitHub Issues 提交最小复现和相关日志片段。
 
@@ -69,6 +90,14 @@ python src\external-tools\analyze_fixture.py `
 - [架构决策](docs/decisions/ADR-0001-offline-deterministic-core.md)
 - [明文日志决策](docs/decisions/ADR-0002-plaintext-local-logs.md)
 - [黄金样本](tests/fixtures/README.md)
+
+## 路线图
+
+- **v0.1.x**：完成更多真实游戏交互验证，修复 ModLoader 兼容性问题，发布 Steam 创意工坊版本。
+- **P2**：扩展波次级记录器，提升结算复盘的因果链质量。
+- **P3**：支持更多原版角色和常见 Mod 角色，建立更完整的角色规则库。
+- **P4**：完善 UI 文案、手柄焦点、本地化和异常提示。
+- **P5**：扩大真实跑局样本，校准阈值，准备 Workshop 公测。
 
 ## 目录
 

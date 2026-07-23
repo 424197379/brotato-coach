@@ -459,9 +459,16 @@ class Acceptance:
             self.fail("mod_zip_exists", "missing src/brotato-mod/dist/BrotatoCoach.zip")
         else:
             with zipfile.ZipFile(zip_path) as archive:
-                names = {name.replace("\\", "/") for name in archive.namelist() if not name.endswith("/")}
+                raw_names = [name for name in archive.namelist() if not name.endswith("/")]
+                invalid_names = sorted(name for name in raw_names if "\\" in name)
+                names = set(raw_names)
             missing = sorted(EXPECTED_ZIP_ENTRIES - names)
-            if missing:
+            if invalid_names:
+                self.fail(
+                    "mod_zip_expected_entries",
+                    f"non-portable path separators in {invalid_names[:3]}",
+                )
+            elif missing:
                 self.fail("mod_zip_expected_entries", f"missing {missing}")
             else:
                 self.pass_("mod_zip_expected_entries", f"{len(EXPECTED_ZIP_ENTRIES)} expected files present")

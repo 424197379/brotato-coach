@@ -31,4 +31,4 @@ func _ensure_recorder():
 		return
 	var recorder = CoachRecorder.new()
 	recorder.name = "BrotatoCoachRecorder"
-	root.add_child(recorder)
+	root.call_deferred("add_child", recorder)

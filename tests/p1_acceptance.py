@@ -638,7 +638,12 @@ class Acceptance:
         pause = pause_path.read_text(encoding="utf-8")
         run_end = run_end_path.read_text(encoding="utf-8")
         required_pairs = [
-            ("mod_main creates recorder", "BrotatoCoachRecorder" in mod_main and "root.add_child(recorder)" in mod_main),
+            (
+                "mod_main defers recorder mount",
+                "BrotatoCoachRecorder" in mod_main
+                and 'root.call_deferred("add_child", recorder)' in mod_main
+                and "root.add_child(recorder)" not in mod_main,
+            ),
             ("recorder writes user runs path", "user://brotato_coach/runs" in recorder),
             ("shop ready records snapshot", "record_shop_ready" in shop and "record_shop_snapshot" in recorder),
             ("shop snapshot dedupe", "_last_shop_key" in recorder and "_shop_key" in recorder),

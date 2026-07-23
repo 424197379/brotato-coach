@@ -27,4 +27,10 @@ jobs:
 
       - name: Run acceptance tests
         shell: pwsh
-        run: python ./tests/p1_acceptance.py
+        run: |
+          python ./tests/p1_acceptance.py
+          $exitCode = $LASTEXITCODE
+          if (Test-Path "private/dev-docs/test-reports/p1-acceptance-results.json") {
+            Get-Content -Raw "private/dev-docs/test-reports/p1-acceptance-results.json"
+          }
+          exit $exitCode

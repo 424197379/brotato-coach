@@ -1,0 +1,97 @@
+{
+  "schema_version": "0.1.0",
+  "sample_id": "case-002-double-illusionist-wave-3",
+  "required_findings": [
+    {
+      "id": "shop.buy.new_katana",
+      "severity": "high",
+      "fact": {
+        "action": "buy_now",
+        "item_id": "weapon_new_katana_2",
+        "rank": 1
+      },
+      "reason_codes": [
+        "distinct_weapon_increases_slot_cap",
+        "slashing_set_crosses_threshold"
+      ]
+    },
+    {
+      "id": "shop.buy.scar",
+      "severity": "high",
+      "fact": {
+        "action": "buy_now",
+        "item_id": "item_scar",
+        "rank": 2
+      },
+      "reason_codes": [
+        "early_experience_compounds",
+        "range_penalty_is_low_cost_for_current_build"
+      ]
+    },
+    {
+      "id": "shop.lock.remaining_pair",
+      "severity": "medium",
+      "fact": {
+        "action": "lock",
+        "item_ids": [
+          "item_head_injury",
+          "weapon_sword_paladin_1"
+        ]
+      },
+      "reason_codes": [
+        "budget_cannot_buy_all_priority_candidates",
+        "duplicate_weapon_can_immediately_combine_next_shop"
+      ]
+    },
+    {
+      "id": "diagnosis.primary_gaps",
+      "severity": "high",
+      "fact": {
+        "stat_ids": [
+          "harvesting",
+          "recovery",
+          "speed",
+          "percent_damage"
+        ],
+        "observed_values": [0, 0, 0, -34]
+      }
+    },
+    {
+      "id": "plan.wave_6",
+      "severity": "medium",
+      "fact": {
+        "distinct_weapons": {"min": 5, "max": 6},
+        "max_hp": {"min": 20},
+        "armor": {"min": 4},
+        "speed": {"min": 5},
+        "harvesting": {"min": 10, "max": 20},
+        "percent_damage": {"target": -15, "tolerance": 5},
+        "requires_recovery": true
+      }
+    },
+    {
+      "id": "plan.wave_10",
+      "severity": "medium",
+      "fact": {
+        "max_hp": {"target": 35, "tolerance": 5},
+        "armor": {"min": 6, "max": 8},
+        "speed": {"min": 8},
+        "percent_damage": {"min": 0}
+      }
+    }
+  ],
+  "forbidden_findings": [
+    {
+      "id": "do_not_call_weird_ghost_damage",
+      "description": "不得把第 2 波 1 HP 开局判定为受伤或运营失误。"
+    },
+    {
+      "id": "do_not_recommend_duplicate_without_combine",
+      "description": "不得把无法立即合成的重复武器当成增加武器槽的手段。"
+    },
+    {
+      "id": "do_not_exceed_budget",
+      "description": "当前购买组合总价不得超过 76。"
+    }
+  ]
+}

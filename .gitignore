@@ -1,0 +1,32 @@
+# 临时或未选入黄金样本的运行数据
+/private/
+
+# Generated output
+/dist/
+/tmp/
+/coverage/
+/src/brotato-mod/build/
+/src/brotato-mod/dist/
+/src/external-tools/reports/
+/__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Godot and ModLoader output
+/.godot/
+*.log
+*.pck
+
+# 根目录和临时目录中的本地运行记录。
+# tests/fixtures 下使用 source-*.json 命名的黄金样本允许提交。
+run_*.json
+live_run.json
+*.coach.md
+
+# Local tools
+.playwright-mcp/
+.DS_Store
+Thumbs.db
+
+# Local Codex coordination
+/AGENTS.md

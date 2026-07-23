@@ -1,0 +1,46 @@
+name: Bug 报告
+description: 报告加载、按钮、分析、记录器或兼容性问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: 请先退出游戏并备份存档。不要上传包含第三方游戏资源的文件。
+  - type: input
+    id: game-version
+    attributes:
+      label: Brotato 版本
+      placeholder: 1.1.15.4
+    validations:
+      required: true
+  - type: input
+    id: mod-version
+    attributes:
+      label: 土豆教练版本
+      placeholder: 0.1.0-mvp
+    validations:
+      required: true
+  - type: textarea
+    id: mods
+    attributes:
+      label: 已启用 Mod
+      description: 列出可能相关的 Mod 和版本。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志
+      description: 粘贴 modloader.log 中与 BrotatoCoach 相关的部分。

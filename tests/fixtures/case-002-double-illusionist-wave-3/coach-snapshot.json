@@ -1,0 +1,127 @@
+{
+  "schema_version": "0.1.0",
+  "sample_id": "case-002-double-illusionist-wave-3",
+  "captured_at_utc": "2026-07-23T16:08:41Z",
+  "phase": "shop",
+  "completed_wave": 3,
+  "next_wave": 4,
+  "run": {
+    "run_uid": "45fe2438-c930-4ee5-be2c-fd2571f34c8e",
+    "character_id": "character_double_illusionist",
+    "difficulty": 1,
+    "is_endless": false,
+    "game_version": "1.1.15.4",
+    "runtracker_version": "1.2.3"
+  },
+  "player": {
+    "level": 3,
+    "current_xp": 38,
+    "materials": 76,
+    "current_hp": 16,
+    "max_hp": 16,
+    "stats_at_wave_3_end": {
+      "max_hp": 15,
+      "armor": 1,
+      "dodge": 0,
+      "speed": 0,
+      "luck": 5,
+      "harvesting": 0,
+      "melee_damage": 1,
+      "ranged_damage": 0,
+      "elemental_damage": 0,
+      "engineering": 0,
+      "percent_damage": -34,
+      "attack_speed": 3,
+      "crit_chance": 0,
+      "range": 0,
+      "hp_regeneration": 0,
+      "lifesteal": 0,
+      "curse": 0,
+      "weapon_slots": 4
+    }
+  },
+  "weapons": [
+    {
+      "id": "weapon_shadow_katana_2",
+      "tier": 1,
+      "slot": 0,
+      "damage_last_wave": 126,
+      "sets": ["extatonion_set_slashing", "extatonion_set_summon"]
+    },
+    {
+      "id": "weapon_eyemace_1",
+      "tier": 0,
+      "slot": 1,
+      "damage_last_wave": 122,
+      "sets": ["extatonion_set_biological"]
+    },
+    {
+      "id": "weapon_sword_paladin_1",
+      "tier": 0,
+      "slot": 2,
+      "damage_last_wave": 93,
+      "sets": ["extatonion_set_slashing"]
+    }
+  ],
+  "items": [
+    {
+      "id": "character_double_illusionist",
+      "count": 1
+    },
+    {
+      "id": "item_weird_ghost",
+      "count": 1
+    }
+  ],
+  "active_sets": {
+    "extatonion_set_slashing": 2,
+    "extatonion_set_summon": 1,
+    "extatonion_set_biological": 1
+  },
+  "last_wave": {
+    "weapon_damage_total": 341,
+    "damage_taken": 0,
+    "current_hp_at_boundary": 15,
+    "max_hp_at_boundary": 15
+  },
+  "shop": {
+    "rerolls_this_shop": 0,
+    "candidates": [
+      {
+        "slot": 0,
+        "id": "weapon_new_katana_2",
+        "tier": 1,
+        "price": 31,
+        "locked": false,
+        "sets": ["extatonion_set_slashing"]
+      },
+      {
+        "slot": 1,
+        "id": "item_scar",
+        "tier": 0,
+        "price": 25,
+        "locked": false
+      },
+      {
+        "slot": 2,
+        "id": "item_head_injury",
+        "tier": 0,
+        "price": 25,
+        "locked": false
+      },
+      {
+        "slot": 3,
+        "id": "weapon_sword_paladin_1",
+        "tier": 0,
+        "price": 25,
+        "locked": false,
+        "sets": ["extatonion_set_slashing"]
+      }
+    ]
+  },
+  "data_quality": {
+    "coverage": "waves_1_to_3_plus_current_shop",
+    "shop_prices_are_exact": true,
+    "known_temporal_difference": "wave snapshots precede post-wave level-up and shop state"
+  }
+}

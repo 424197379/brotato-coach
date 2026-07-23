@@ -1,0 +1,44 @@
+name: 教练规则建议
+description: 提交角色玩法、商店决策、属性阈值或复盘规则
+title: "[Rule] "
+labels: ["rules"]
+body:
+  - type: input
+    id: character
+    attributes:
+      label: 角色
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 游戏与相关 Mod 版本
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: 适用场景
+      description: 说明波次、难度、武器和关键属性。
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: 建议结论
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 判断依据或样本
+      description: 可以描述对局或附上不含游戏资源的 JSON/JSONL。
+    validations:
+      required: true
+  - type: checkboxes
+    id: source
+    attributes:
+      label: 来源确认
+      options:
+        - label: 我没有复制许可证不明的第三方 Mod 或 Brotato 游戏源码。
+          required: true

@@ -1,0 +1,83 @@
+{
+  "schema_version": "0.1.0",
+  "sample_id": "case-001-apprentice-endless-wave-30",
+  "required_findings": [
+    {
+      "id": "review.summary",
+      "severity": "high",
+      "expected_concept": "普通清怪成长基本跟上，但 Boss 输出、生存和诅咒收益没有跟上。"
+    },
+    {
+      "id": "review.early_defense_debt",
+      "severity": "high",
+      "evidence": {
+        "armor_entering_wave_19": 8,
+        "armor_wave_30": 9,
+        "dodge_wave_30": 14,
+        "speed_wave_30": 5
+      },
+      "expected_concept": "防御和移动从更早波次开始长期欠账。"
+    },
+    {
+      "id": "review.curse_not_closed_loop",
+      "severity": "high",
+      "evidence": {
+        "curse": 47,
+        "cursed_items": 1,
+        "cursed_weapons": 0
+      },
+      "expected_concept": "承担了高诅咒敌人强化，却没有获得足够诅咒装备收益。"
+    },
+    {
+      "id": "review.damage_growth_lags_enemy_hp",
+      "severity": "medium",
+      "evidence": {
+        "weapon_output_growth": 3.38,
+        "enemy_hp_growth_with_curse": 3.9929215733851136
+      }
+    },
+    {
+      "id": "review.final_trigger.ancient_altar",
+      "severity": "critical",
+      "evidence": {
+        "max_hp": 116,
+        "hp_start_wave_percent": 10,
+        "start_hp_approx": 12,
+        "start_hp_without_altar_approx": 58
+      },
+      "expected_concept": "伤心番茄与黑暗祭坛叠加，把第 30 波开局生命压到约 10%，是最终直接触发点。"
+    },
+    {
+      "id": "review.bad_timing.scar_wave_30",
+      "severity": "medium",
+      "expected_concept": "第 30 波购买伤疤对当前硬门槛没有即时收益。"
+    },
+    {
+      "id": "review.positive_growth_engines",
+      "severity": "medium",
+      "item_ids": [
+        "item_extra_stomach",
+        "item_vigilante_ring",
+        "item_alien_eyes",
+        "item_nail",
+        "item_frozen_heart",
+        "item_lighthouse"
+      ],
+      "expected_concept": "不能把整局简单判定为没有成长。"
+    }
+  ],
+  "forbidden_findings": [
+    {
+      "id": "do_not_only_analyze_wave_30",
+      "description": "不得只描述死亡波，必须指出更早形成的移动、防御与诅咒经营问题。"
+    },
+    {
+      "id": "do_not_claim_full_wave_1_to_18_history",
+      "description": "不得声称拥有第 1 至 18 波逐波日志。"
+    },
+    {
+      "id": "do_not_blame_damage_only",
+      "description": "不得把失败单独归因于总伤害不足。"
+    }
+  ]
+}

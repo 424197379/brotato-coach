@@ -1,0 +1,20 @@
+{
+  "name": "BrotatoCoach",
+  "namespace": "BrotatoCoach",
+  "display_name": "土豆教练",
+  "version_number": "0.1.0",
+  "description": "土豆教练：离线商店建议、局中分析和结算复盘按钮。",
+  "website_url": "",
+  "dependencies": [],
+  "extra": {
+    "godot": {
+      "id": "BrotatoCoach-BrotatoCoach",
+      "authors": ["BrotatoCoach"],
+      "incompatibilities": [],
+      "load_before": [],
+      "compatible_mod_loader_version": ["6.0.0"],
+      "compatible_game_version": ["1.1.15.4"]
+    },
+    "rule_pack_version": "brotato-1.1.15.4+coach.1"
+  }
+}

@@ -1,0 +1,302 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.brotato-coach/schemas/coach-snapshot.schema.json",
+  "title": "CoachSnapshot",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "phase",
+    "completed_wave",
+    "next_wave",
+    "run",
+    "player",
+    "weapons",
+    "items",
+    "data_quality"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "sample_id": {
+      "type": "string"
+    },
+    "phase": {
+      "enum": [
+        "wave_start",
+        "wave_end",
+        "shop",
+        "paused",
+        "run_end",
+        "run_end_review"
+      ]
+    },
+    "completed_wave": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "next_wave": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "character_id",
+        "is_endless"
+      ],
+      "properties": {
+        "character_id": {
+          "type": "string"
+        },
+        "difficulty": {
+          "type": "integer"
+        },
+        "is_endless": {
+          "type": "boolean"
+        },
+        "game_version": {
+          "type": "string"
+        }
+      }
+    },
+    "player": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "materials",
+        "current_hp",
+        "max_hp"
+      ],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_xp": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "materials": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_hp": {
+          "type": "number"
+        },
+        "max_hp": {
+          "type": "number"
+        },
+        "stats": {
+          "$ref": "#/$defs/stats"
+        },
+        "stats_at_wave_3_end": {
+          "$ref": "#/$defs/stats"
+        },
+        "extra_stats": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "string",
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "weapons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/weapon"
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "active_sets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "recent_waves": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/wave_summary"
+      }
+    },
+    "last_wave": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "shop": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "rerolls_this_shop": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "paid_rerolls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reroll_cost": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/shop_candidate"
+          }
+        }
+      }
+    },
+    "data_quality": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "stats": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "properties": {
+        "max_hp": {"type": "number"},
+        "armor": {"type": "number"},
+        "dodge": {"type": "number"},
+        "speed": {"type": "number"},
+        "luck": {"type": "number"},
+        "harvesting": {"type": "number"},
+        "melee_damage": {"type": "number"},
+        "ranged_damage": {"type": "number"},
+        "elemental_damage": {"type": "number"},
+        "engineering": {"type": "number"},
+        "percent_damage": {"type": "number"},
+        "attack_speed": {"type": "number"},
+        "crit_chance": {"type": "number"},
+        "range": {"type": "number"},
+        "hp_regeneration": {"type": "number"},
+        "lifesteal": {"type": "number"},
+        "curse": {"type": "number"},
+        "pickup_range": {"type": "number"},
+        "xp_gain": {"type": "number"},
+        "enemy_health": {"type": "number"},
+        "enemy_damage": {"type": "number"},
+        "enemy_speed": {"type": "number"},
+        "number_of_enemies": {"type": "number"},
+        "damage_against_bosses": {"type": "number"},
+        "explosion_damage": {"type": "number"},
+        "explosion_size": {"type": "number"},
+        "hp_start_wave_percent": {"type": "number"},
+        "weapon_slots": {"type": "number"}
+      }
+    },
+    "weapon": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {"type": "string"},
+        "base_id": {"type": "string"},
+        "tier": {"type": "integer", "minimum": 0},
+        "slot": {"type": "integer", "minimum": 0},
+        "damage_last_wave": {"type": "number"},
+        "cursed": {"type": "boolean"},
+        "sets": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "scaling": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["stat", "coefficient"],
+            "properties": {
+              "stat": {"type": "string"},
+              "coefficient": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id",
+        "count"
+      ],
+      "properties": {
+        "id": {"type": "string"},
+        "count": {"type": "integer", "minimum": 1},
+        "tier": {"type": "integer", "minimum": 0},
+        "cursed": {"type": "boolean"},
+        "tracked_value": {"type": "number"}
+      }
+    },
+    "shop_candidate": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "slot",
+        "id",
+        "price",
+        "locked"
+      ],
+      "properties": {
+        "slot": {"type": "integer", "minimum": 0},
+        "id": {"type": "string"},
+        "kind": {"enum": ["weapon", "item", "upgrade", "unknown"]},
+        "tier": {"type": "integer", "minimum": 0},
+        "price": {"type": "integer", "minimum": 0},
+        "locked": {"type": "boolean"},
+        "active": {"type": "boolean"},
+        "sets": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "wave_summary": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "wave",
+        "cleared"
+      ],
+      "properties": {
+        "wave": {"type": "integer", "minimum": 1},
+        "cleared": {"type": "boolean"},
+        "duration_seconds": {"type": "number"},
+        "materials_start": {"type": "integer"},
+        "materials_gained": {"type": "integer"},
+        "materials_end": {"type": "integer"},
+        "damage_dealt": {"type": "number"},
+        "damage_taken": {"type": "number"},
+        "healing": {"type": "number"},
+        "retries": {"type": "integer", "minimum": 0},
+        "weapon_damage": {
+          "type": "object",
+          "additionalProperties": {"type": "number"}
+        }
+      }
+    }
+  }
+}

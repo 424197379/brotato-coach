@@ -1,0 +1,295 @@
+{
+  "schema_version": "0.1.0",
+  "sample_id": "case-001-apprentice-endless-wave-30",
+  "phase": "run_end_review",
+  "run": {
+    "character_id": "character_apprentice",
+    "is_endless": true,
+    "failed_wave": 30,
+    "wave_30_cleared": false,
+    "wave_30_attempt_blocks": 14
+  },
+  "coverage": {
+    "waves_1_to_17": "not_available_as_per_wave_history",
+    "entering_wave_19": "native_state_snapshot",
+    "waves_19_to_30": "reconstructed_from_all_Run_Data_blocks_in_log_txt",
+    "wave_30_final_state": "parsed_from_two_native_rolling_backups_at_analysis_time",
+    "original_wave_30_backups_still_available": false
+  },
+  "entering_wave_19": {
+    "source_current_wave": 18,
+    "level": 25,
+    "current_hp": 50,
+    "materials": 140,
+    "item_count": 43,
+    "stats": {
+      "max_hp": 50,
+      "armor": 8,
+      "dodge": 3,
+      "speed": -7,
+      "luck": 46,
+      "harvesting": 18,
+      "melee_damage": 64,
+      "ranged_damage": 39,
+      "elemental_damage": 38,
+      "engineering": 43,
+      "percent_damage": 36,
+      "attack_speed": 33,
+      "crit_chance": 36,
+      "range": 121,
+      "hp_regeneration": 10,
+      "lifesteal": 0,
+      "curse": 22
+    },
+    "weapons": [
+      {"id": "weapon_armaged_3", "damage_last_wave": 9203},
+      {"id": "weapon_meat_gun_4", "damage_last_wave": 4743},
+      {"id": "weapon_revolver_3", "damage_last_wave": 7099},
+      {"id": "weapon_lil_brotato_4", "damage_last_wave": 2649},
+      {"id": "weapon_shadow_katana_3", "damage_last_wave": 442},
+      {"id": "weapon_clone_gun_3", "damage_last_wave": 3138}
+    ]
+  },
+  "waves": [
+    {
+      "wave": 19,
+      "start_materials": 140,
+      "end_materials": 627,
+      "materials_gained": 487,
+      "level_ups": 1,
+      "consumables": 1,
+      "cleared": true
+    },
+    {
+      "wave": 20,
+      "shop_spend_approx": 546,
+      "start_materials": 81,
+      "purchases": [
+        "item_missile",
+        "item_crystal",
+        "item_bean_teacher",
+        "item_jellyshield",
+        "item_baby_squid"
+      ],
+      "end_materials": 755,
+      "materials_gained": 674,
+      "level_ups": 2,
+      "consumables": 2,
+      "cleared": true
+    },
+    {
+      "wave": 21,
+      "shop_spend_approx": 546,
+      "start_materials": 209,
+      "purchases": [
+        "item_alien_eyes",
+        "item_fruit_battery",
+        "item_wolf_helmet",
+        "item_sad_tomato"
+      ],
+      "end_materials": 548,
+      "materials_gained": 339,
+      "level_ups": 1,
+      "consumables": 1,
+      "cleared": true
+    },
+    {
+      "wave": 22,
+      "shop_spend_approx": 300,
+      "start_materials": 248,
+      "purchases": [
+        "item_recycling_machine",
+        "item_monks_relic"
+      ],
+      "end_materials": 604,
+      "materials_gained": 356,
+      "level_ups": 1,
+      "consumables": 0,
+      "cleared": true
+    },
+    {
+      "wave": 23,
+      "shop_spend_approx": 356,
+      "start_materials": 248,
+      "purchases": ["item_frozen_heart"],
+      "end_materials": 618,
+      "materials_gained": 370,
+      "level_ups": 0,
+      "consumables": 1,
+      "cleared": true
+    },
+    {
+      "wave": 24,
+      "shop_spend_approx": 381,
+      "start_materials": 237,
+      "purchases": [
+        "item_scar",
+        "item_heritage",
+        "item_whistle"
+      ],
+      "weapons_added": ["weapon_clone_gun_4"],
+      "weapons_removed": ["weapon_revolver_3"],
+      "end_materials": 578,
+      "materials_gained": 341,
+      "level_ups": 1,
+      "consumables": 2,
+      "cleared": true
+    },
+    {
+      "wave": 25,
+      "shop_spend_approx": 550,
+      "start_materials": 28,
+      "purchases": [
+        "item_skals_firework",
+        "item_diploma",
+        "item_silver_bullet"
+      ],
+      "end_materials": 466,
+      "materials_gained": 438,
+      "level_ups": 1,
+      "consumables": 0,
+      "cleared": true
+    },
+    {
+      "wave": 26,
+      "shop_spend_approx": 432,
+      "start_materials": 34,
+      "purchases": [
+        "item_jelly",
+        "item_coil"
+      ],
+      "end_materials": 507,
+      "materials_gained": 473,
+      "level_ups": 2,
+      "consumables": 1,
+      "cleared": true
+    },
+    {
+      "wave": 27,
+      "shop_spend_approx": 471,
+      "start_materials": 36,
+      "purchases": [
+        "item_fish_hook",
+        "item_bruns_badge",
+        "item_small_fish",
+        "item_propeller_hat"
+      ],
+      "end_materials": 575,
+      "materials_gained": 539,
+      "level_ups": 1,
+      "consumables": 1,
+      "cleared": true
+    },
+    {
+      "wave": 28,
+      "shop_spend_approx": 373,
+      "start_materials": 202,
+      "purchases": ["item_nail"],
+      "weapons_added": ["weapon_sniper_rifle_4"],
+      "weapons_removed": ["weapon_shadow_katana_3"],
+      "end_materials": 725,
+      "materials_gained": 523,
+      "level_ups": 1,
+      "consumables": 0,
+      "cleared": true
+    },
+    {
+      "wave": 29,
+      "shop_spend_approx": 705,
+      "start_materials": 20,
+      "purchases": [
+        "item_wisdom",
+        "item_lighthouse"
+      ],
+      "end_materials": 747,
+      "materials_gained": 727,
+      "level_ups": 1,
+      "consumables": 1,
+      "cleared": true
+    },
+    {
+      "wave": 30,
+      "shop_spend_approx": 593,
+      "start_materials": 154,
+      "purchases": [
+        "item_scar",
+        "item_ancient_altar",
+        "item_sifds_relic"
+      ],
+      "end_materials": 154,
+      "bonus_materials": 58,
+      "cleared": false,
+      "attempt_blocks": 14
+    }
+  ],
+  "final_state": {
+    "stats": {
+      "max_hp": 116,
+      "armor": 9,
+      "dodge": 14,
+      "speed": 5,
+      "luck": 131,
+      "harvesting": 37,
+      "melee_damage": 88,
+      "ranged_damage": 49,
+      "elemental_damage": 87,
+      "engineering": 126,
+      "percent_damage": 96,
+      "attack_speed": 63,
+      "crit_chance": 41,
+      "range": 165,
+      "hp_regeneration": 29,
+      "lifesteal": 8,
+      "curse": 47,
+      "pickup_range": 80,
+      "xp_gain": 245,
+      "enemy_speed": -15,
+      "number_of_enemies": 10,
+      "damage_against_bosses": 25,
+      "explosion_damage": 20,
+      "explosion_size": 15,
+      "hp_start_wave_percent": 10,
+      "instant_gold_attracting": 160
+    },
+    "weapons": [
+      {"id": "weapon_armaged_3"},
+      {"id": "weapon_meat_gun_4"},
+      {"id": "weapon_lil_brotato_4"},
+      {"id": "weapon_clone_gun_3"},
+      {"id": "weapon_clone_gun_4"},
+      {"id": "weapon_sniper_rifle_4"}
+    ],
+    "wave_30_damage_two_retries": [
+      [2842, 1346, 4982, 6218, 2266, 5676],
+      [4879, 5729, 10601, 3136, 5761, 4453]
+    ],
+    "tracked_item_values": {
+      "item_lootworm": 426,
+      "item_spyglass": 185,
+      "item_extra_stomach": 102,
+      "item_snowball": 4,
+      "item_vigilante_ring": 36,
+      "item_jellyshield": 22,
+      "item_baby_squid": 11,
+      "item_alien_eyes": 25938,
+      "item_recycling_machine": 329
+    },
+    "curse_utilization": {
+      "curse": 47,
+      "cursed_items": 1,
+      "total_items": 73,
+      "cursed_weapons": 0,
+      "total_weapons": 6,
+      "cursed_item_ids": ["item_lighthouse"],
+      "fish_hook_count": 2
+    }
+  },
+  "derived_metrics_at_analysis_time": {
+    "direct_weapon_output_index_wave_19": 62.441,
+    "direct_weapon_output_index_wave_30": 211.052,
+    "direct_weapon_output_growth_ratio": 3.38,
+    "base_enemy_hp_growth_wave_20_to_30": 3.48,
+    "combined_enemy_hp_growth_with_curse": 3.9929215733851136,
+    "combined_enemy_damage_growth_with_curse": 2.2531471166316885
+  }
+}

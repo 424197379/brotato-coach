@@ -1,0 +1,183 @@
+===== SESSION LINE 790 =====
+Exit code: 0
+Wall time: 0.5 seconds
+Output:
+stat_max_hp                  1880215261 116
+stat_armor                   433796225  9
+stat_dodge                   437236099  14
+stat_speed                   455061873  5
+stat_luck                    2486403535 131
+stat_harvesting              4129018011 37
+stat_melee_damage            4170350086 88
+stat_ranged_damage           156323247  49
+stat_elemental_damage        1332121877 87
+stat_engineering             4033990219 126
+stat_percent_damage          475911951  96
+stat_attack_speed            2228245608 63
+stat_crit_chance             2122898003 41
+stat_range                   453346765  165
+stat_hp_regeneration         1877912058 29
+stat_lifesteal               3332643737 8
+stat_curse                   436281442  47
+pickup_range                 1135362205 80
+xp_gain                      624892875  245
+enemy_speed                  451465811  -15
+number_of_enemies            817155015  10
+damage_against_bosses        2727338392 25
+knockback                    1973416332 7
+explosion_damage             3530041092 20
+explosion_size               2993307840 15
+hp_start_wave                243980988  10
+instant_gold_attracting      3975496763 160
+
+===== SESSION LINE 800 =====
+Exit code: 0
+Wall time: 0.4 seconds
+Output:
+diff_count 6
+/current_run_state/players_data/0/weapons/0/dmg_dealt_last_wave '2842' -> '4879'
+/current_run_state/players_data/0/weapons/1/dmg_dealt_last_wave '1346' -> '5729'
+/current_run_state/players_data/0/weapons/2/dmg_dealt_last_wave '4982' -> '10601'
+/current_run_state/players_data/0/weapons/3/dmg_dealt_last_wave '6218' -> '3136'
+/current_run_state/players_data/0/weapons/4/dmg_dealt_last_wave '2266' -> '5761'
+/current_run_state/players_data/0/weapons/5/dmg_dealt_last_wave '5676' -> '4453'
+
+===== SESSION LINE 808 =====
+Exit code: 0
+Wall time: 0.5 seconds
+Output:
+blocks 37
+W19 start gold=140, items=43, weapons=['weapon_armaged_3', 'weapon_meat_gun_4', 'weapon_revolver_3', 'weapon_lil_brotato_4', 'weapon_shadow_katana_3', 'weapon_clone_gun_3']
+    clear: gold 140->627 (+487), levelups=1, consumables=1, attempts/blocks=2
+W20 shop spent~546 start= 81 add=['item_missile', 'item_crystal', 'item_bean_teacher', 'item_jellyshield', 'item_baby_squid'] rem=- weapon+=- weapon-=-
+    clear: gold 81->755 (+674), levelups=2, consumables=2, attempts/blocks=3
+W21 shop spent~546 start=209 add=['item_alien_eyes', 'item_fruit_battery', 'item_wolf_helmet', 'item_sad_tomato'] rem=- weapon+=- weapon-=-
+    clear: gold 209->548 (+339), levelups=1, consumables=1, attempts/blocks=2
+W22 shop spent~300 start=248 add=['item_recycling_machine', 'item_monks_relic'] rem=- weapon+=- weapon-=-
+    clear: gold 248->604 (+356), levelups=1, consumables=0, attempts/blocks=2
+W23 shop spent~356 start=248 add=['item_frozen_heart'] rem=- weapon+=- weapon-=-
+    clear: gold 248->618 (+370), levelups=0, consumables=1, attempts/blocks=2
+W24 shop spent~381 start=237 add=['item_scar', 'item_heritage', 'item_whistle'] rem=- weapon+=['weapon_clone_gun_4'] weapon-=['weapon_revolver_3']
+    clear: gold 237->578 (+341), levelups=1, consumables=2, attempts/blocks=2
+W25 shop spent~550 start= 28 add=['item_skals_firework', 'item_diploma', 'item_silver_bullet'] rem=- weapon+=- weapon-=-
+    clear: gold 28->466 (+438), levelups=1, consumables=0, attempts/blocks=2
+W26 shop spent~432 start= 34 add=['item_jelly', 'item_coil'] rem=- weapon+=- weapon-=-
+    clear: gold 34->507 (+473), levelups=2, consumables=1, attempts/blocks=2
+W27 shop spent~471 start= 36 add=['item_fish_hook', 'item_bruns_badge', 'item_small_fish', 'item_propeller_hat'] rem=- weapon+=- weapon-=-
+    clear: gold 36->575 (+539), levelups=1, consumables=1, attempts/blocks=2
+W28 shop spent~373 start=202 add=['item_nail'] rem=- weapon+=['weapon_sniper_rifle_4'] weapon-=['weapon_shadow_katana_3']
+    clear: gold 202->725 (+523), levelups=1, consumables=0, attempts/blocks=2
+W29 shop spent~705 start= 20 add=['item_wisdom', 'item_lighthouse'] rem=- weapon+=- weapon-=-
+    clear: gold 20->747 (+727), levelups=1, consumables=1, attempts/blocks=2
+W30 shop spent~593 start=154 add=['item_scar', 'item_ancient_altar', 'item_sifds_relic'] rem=- weapon+=- weapon-=-
+    NOT CLEARED: attempts/blocks=14, gold stayed 154, bonus=58
+
+===== SESSION LINE 835 =====
+Exit code: 0
+Wall time: 0.6 seconds
+Output:
+NONZERO TRACKED INVENTORY ITEMS
+item_lootworm 3508981590 426
+item_spyglass 2857366121 185
+item_extra_stomach 3684738821 102
+item_snowball 4196658677 4
+item_vigilante_ring 3416663397 36
+item_jellyshield 688142636 22
+item_baby_squid 2025306710 11
+item_alien_eyes 164825777 25938
+item_recycling_machine 2730991783 329
+SPECIAL COUNTERS {'kill': 705, 'crit_kill': 402, 'burn_kill': 0, 'gold': 618, 'living_enemy': 16.705882, 'living_tree': 0, 'burning_enemy': 0}
+
+===== SESSION LINE 839 =====
+Exit code: 0
+Wall time: 0.4 seconds
+Output:
+
+ run_v3_0.json wave 18 has True
+level 25 hp 50 gold 140 items 43
+stats max_hp=50 armor=8 dodge=3 speed=-7 luck=46 harvesting=18 melee_damage=64 ranged_damage=39 elemental_damage=38 engineering=43 percent_damage=36 attack_speed=33 crit_chance=36 range=121 hp_regeneration=10 lifesteal=0 curse=22
+weapons [('weapon_armaged_3', '9203'), ('weapon_meat_gun_4', '4743'), ('weapon_revolver_3', '7099'), ('weapon_lil_brotato_4', '2649'), ('weapon_shadow_katana_3', '442'), ('weapon_clone_gun_3', '3138')]
+
+ run_v3_0_01.json.bak wave 18 has True
+level 25 hp 50 gold 140 items 43
+stats max_hp=50 armor=8 dodge=3 speed=-7 luck=46 harvesting=18 melee_damage=64 ranged_damage=39 elemental_damage=38 engineering=43 percent_damage=36 attack_speed=33 crit_chance=36 range=121 hp_regeneration=10 lifesteal=0 curse=22
+weapons [('weapon_armaged_3', '9203'), ('weapon_meat_gun_4', '4743'), ('weapon_revolver_3', '7099'), ('weapon_lil_brotato_4', '2649'), ('weapon_shadow_katana_3', '442'), ('weapon_clone_gun_3', '3138')]
+
+ run_v3_0_02.json.bak wave 18 has True
+level 25 hp 50 gold 140 items 43
+stats max_hp=50 armor=8 dodge=3 speed=-7 luck=46 harvesting=18 melee_damage=64 ranged_damage=39 elemental_damage=38 engineering=43 percent_damage=36 attack_speed=33 crit_chance=36 range=121 hp_regeneration=10 lifesteal=0 curse=22
+weapons [('weapon_armaged_3', '9203'), ('weapon_meat_gun_4', '4743'), ('weapon_revolver_3', '7099'), ('weapon_lil_brotato_4', '2649'), ('weapon_shadow_katana_3', '442'), ('weapon_clone_gun_3', '3138')]
+
+ run_v3_0_03.json.bak wave 18 has True
+level 25 hp 50 gold 313 items 42
+stats max_hp=50 armor=8 dodge=3 speed=-2 luck=46 harvesting=18 melee_damage=64 ranged_damage=39 elemental_damage=38 engineering=43 percent_damage=36 attack_speed=33 crit_chance=36 range=121 hp_regeneration=10 lifesteal=0 curse=22
+weapons [('weapon_armaged_3', '9203'), ('weapon_meat_gun_4', '4743'), ('weapon_revolver_3', '7099'), ('weapon_lil_brotato_4', '2649'), ('weapon_shadow_katana_3', '442'), ('weapon_clone_gun_3', '3138')]
+
+ run_v3_0_04.json.bak wave 17 has True
+level 24 hp 43 gold 41 items 42
+stats max_hp=43 armor=8 dodge=3 speed=-2 luck=26 harvesting=17 melee_damage=62 ranged_damage=38 elemental_damage=37 engineering=42 percent_damage=33 attack_speed=33 crit_chance=36 range=121 hp_regeneration=10 lifesteal=0 curse=22
+weapons [('weapon_armaged_3', '9203'), ('weapon_meat_gun_4', '4743'), ('weapon_revolver_3', '7099'), ('weapon_lil_brotato_4', '2649'), ('weapon_shadow_katana_3', '442'), ('weapon_clone_gun_3', '3138')]
+
+ run_v3_0_05.json.bak wave 17 has True
+level 24 hp 43 gold 41 items 42
+stats max_hp=43 armor=8 dodge=3 speed=-2 luck=26 harvesting=17 melee_damage=62 ranged_damage=38 elemental_damage=37 engineering=42 percent_damage=33 attack_speed=33 crit_chance=36 range=121 hp_regeneration=10 lifesteal=0 curse=22
+weapons [('weapon_armaged_3', '12898'), ('weapon_meat_gun_4', '3758'), ('weapon_revolver_3', '5218'), ('weapon_lil_brotato_4', '3801'), ('weapon_shadow_katana_3', '0'), ('weapon_clone_gun_3', '0')]
+
+===== SESSION LINE 856 =====
+Exit code: 0
+Wall time: 0.4 seconds
+Output:
+structure 3010689590 None
+turret 519771723 None
+stat_engineering 4033990219 126
+stat_percent_damage 475911951 96
+hp_start_wave 243980988 10
+number_of_enemies 817155015 10
+enemy_speed 451465811 -15
+consumable_heal 857480423 0
+consumable_heal_while_full 1466335281 None
+consumable_stats_while_max 1995299385 [[1880215261, 1, 8]]
+damage_against_bosses 2727338392 25
+curse_locked_items 320784633 40
+
+===== SESSION LINE 865 =====
+Exit code: 0
+Wall time: 0.4 seconds
+Output:
+cursed items 1 / 73
+  item_lighthouse factor 1.09
+cursed weapons 0 / 6
+loot_aliens_killed 8 curse 47 locked curse chance 40
+
+===== SESSION LINE 870 =====
+Exit code: 0
+Wall time: 0.4 seconds
+Output:
+item_fish_hook ['1'] cursed= False factor= 0
+item_fish_hook ['1'] cursed= False factor= 0
+item_lighthouse ['7'] cursed= True factor= 1.09
+
+===== SESSION LINE 951 =====
+Exit code: 0
+Wall time: 0.5 seconds
+Output:
+W19 approx total_index 62.441
+  weapon_armaged_3 index 10.824 raw 55.0
+  weapon_meat_gun_4 index 5.028 raw 40.0
+  weapon_revolver_3 index 18.721 raw 89.3
+  weapon_lil_brotato_4 index 16.221 raw 31.8
+  weapon_shadow_katana_3 index 7.369 raw 75.0
+  weapon_clone_gun_3 index 4.279 raw 91.9
+W30 total_index 211.052
+  weapon_armaged_3 index 35.641 raw 98.9
+  weapon_meat_gun_4 index 21.553 raw 93.7
+  weapon_lil_brotato_4 index 88.717 raw 95.1
+  weapon_clone_gun_3 index 20.695 raw 245.0
+  weapon_clone_gun_4 index 27.516 raw 260.6
+  weapon_sniper_rifle_4 index 16.929 raw 381.9
+ratio 3.38
+enemy hp ratio W20->W30 3.48
+curse hp factor 1.469041575982343 1.6855654600401044 relative 1.14739125671986
+curse dmg factor 1.1876166303929372 1.2742261840160418 relative 1.072927198396042
+combined enemy hp relative 3.9929215733851136
+combined enemy dmg relative 2.2531471166316885

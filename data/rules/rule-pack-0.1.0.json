@@ -1,0 +1,149 @@
+{
+  "schema_version": "0.1.0",
+  "rule_pack_version": "brotato-1.1.15.4+coach.1",
+  "double_illusionist_wave_3": {
+    "summary": {
+      "message_key": "report.summary.healthy_early_double_illusionist",
+      "severity": "info",
+      "rule_id": "summary.double_illusionist.wave_3"
+    },
+    "shop_order": [
+      "weapon_new_katana_2",
+      "item_scar",
+      "item_head_injury",
+      "weapon_sword_paladin_1"
+    ],
+    "buy_now": [
+      "weapon_new_katana_2",
+      "item_scar"
+    ],
+    "reason_codes": {
+      "weapon_new_katana_2": [
+        "distinct_weapon_increases_slot_cap",
+        "slashing_set_crosses_threshold"
+      ],
+      "item_scar": [
+        "early_experience_compounds",
+        "range_penalty_is_low_cost_for_current_build"
+      ],
+      "item_head_injury": [
+        "budget_cannot_buy_all_priority_candidates",
+        "cheap_percent_damage_repair"
+      ],
+      "weapon_sword_paladin_1": [
+        "budget_cannot_buy_all_priority_candidates",
+        "duplicate_weapon_can_immediately_combine_next_shop"
+      ]
+    },
+    "stat_gaps": [
+      {
+        "stat_id": "harvesting",
+        "current_path": "harvesting",
+        "target": {"min": 10, "max": 20},
+        "deadline_offset": 3,
+        "severity": "high",
+        "dimensions": ["economy"],
+        "rule_id": "gap.early.harvesting_missing"
+      },
+      {
+        "stat_id": "recovery",
+        "current_path": "recovery",
+        "target": {"min": 1, "max": 2},
+        "deadline_offset": 3,
+        "severity": "high",
+        "dimensions": ["survival", "recovery"],
+        "rule_id": "gap.early.no_recovery_source"
+      },
+      {
+        "stat_id": "speed",
+        "current_path": "speed",
+        "target": {"min": 5, "max": 8},
+        "deadline_offset": 3,
+        "severity": "high",
+        "dimensions": ["survival", "mobility", "damage"],
+        "rule_id": "gap.double_illusionist.speed_scaling"
+      },
+      {
+        "stat_id": "percent_damage",
+        "current_path": "percent_damage",
+        "target": {"target": -15, "tolerance": 5},
+        "deadline_offset": 3,
+        "severity": "high",
+        "dimensions": ["damage"],
+        "rule_id": "gap.early.percent_damage_negative"
+      }
+    ],
+    "plans": {
+      "wave_plus_3": {
+        "targets": {
+          "distinct_weapons": {"min": 5, "max": 6},
+          "max_hp": {"min": 20},
+          "armor": {"min": 4},
+          "speed": {"min": 5},
+          "harvesting": {"min": 10, "max": 20},
+          "percent_damage": {"target": -15, "tolerance": 5},
+          "requires_recovery": true,
+          "weapon_structure": "prefer_new_weapon_types; buy_duplicates_only_for_immediate_combine"
+        },
+        "priorities": [
+          "buy_new_katana_now",
+          "buy_scar_now",
+          "add_one_recovery_source",
+          "raise_armor_for_damage_and_survival"
+        ],
+        "avoid": [
+          "do_not_buy_duplicate_weapons_unless_they_combine_immediately",
+          "do_not_treat_weird_ghost_hp_loss_as_damage_taken"
+        ],
+        "fallback": [
+          "if materials stay short, hold head_injury and sword_paladin as locks before rerolling"
+        ]
+      },
+      "wave_plus_5": {
+        "reference_wave": 10,
+        "targets": {
+          "max_hp": {"target": 35, "tolerance": 5},
+          "armor": {"min": 6, "max": 8},
+          "speed": {"min": 8},
+          "percent_damage": {"min": 0},
+          "recovery": {"min_sources": 1},
+          "distinct_weapons": {"min": 5, "max": 6}
+        },
+        "priorities": [
+          "attack_speed",
+          "armor",
+          "melee_damage",
+          "speed",
+          "max_hp",
+          "elemental_damage"
+        ],
+        "avoid": [
+          "avoid_clone_related_mod_items_until_compatibility_is_verified"
+        ],
+        "fallback": [
+          "if percent_damage cannot reach zero by wave_8, keep buying armor and weapon upgrades over economy"
+        ]
+      }
+    }
+  },
+  "apprentice_wave_30_review": {
+    "summary": {
+      "message_key": "report.summary.apprentice_wave_30_mixed_growth",
+      "severity": "high",
+      "rule_id": "review.summary"
+    },
+    "warnings": [
+      "waves_1_to_17_not_available_as_per_wave_history",
+      "do_not_infer_missing_early_wave_purchases"
+    ],
+    "findings": [
+      "review.summary",
+      "review.early_defense_debt",
+      "review.curse_not_closed_loop",
+      "review.damage_growth_lags_enemy_hp",
+      "review.final_trigger.ancient_altar",
+      "review.bad_timing.scar_wave_30",
+      "review.positive_growth_engines"
+    ]
+  }
+}

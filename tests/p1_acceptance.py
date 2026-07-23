@@ -945,16 +945,23 @@ class Acceptance:
             return
 
         detail = (proc.stdout.strip() + "\n" + proc.stderr.strip()).strip()
-        if proc.returncode == 0:
-            self.pass_("godot_cli_panel_contract", str(summary_path.relative_to(ROOT)))
-            return
-
         summary = {}
         if summary_path.exists():
             try:
                 summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
             except Exception:
                 summary = {}
+
+        if proc.returncode == 0:
+            if bool(summary.get("skipped", False)):
+                self.pass_(
+                    "godot_cli_panel_contract",
+                    f"skipped: {summary.get('skip_reason', 'Godot executable not found')}",
+                )
+            else:
+                self.pass_("godot_cli_panel_contract", str(summary_path.relative_to(ROOT)))
+            return
+
         failed_steps = [
             result.get("name")
             for result in summary.get("results", [])

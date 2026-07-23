@@ -2,14 +2,12 @@
 
 ## Active
 
-- [ ] P1：待 Brotato 退出后，备份 ModLoader profile 并注册本地 `BrotatoCoach.zip`。
-- [ ] P1：以 ModLoader/game log 验证本地 Mod 加载、三个 UI 入口、面板焦点和存档安全。
+- [ ] P0：在最新 ZIP 中实机验收第 4 波刷新后的实时商店建议，以及暂停/结算菜单的手柄正反导航、关闭后焦点恢复和战斗中打开暂停分析后的面板清理。
 - [ ] P7：实机验证通过后发布 Steam Workshop 公测版。
 
 ## Waiting On
 
-- Brotato.exe 退出后才能安全修改 `mod_user_profiles.json` 或通过 ModLoader 注册本地 ZIP。
-- 本机无 Godot 3.x CLI，GDScript 编译和 UI 行为需要真实游戏加载日志验证。
+- 实际 ModLoader 的手柄输入栈和场景切换仍需人工操作确认；Godot CLI 仅覆盖面板生命周期、取消事件和焦点恢复合同。
 
 ## Next
 
@@ -52,3 +50,8 @@
 - [x] 建立黄金样本自动化验收、静态 Mod 验收和 UI/Mod 兼容性测试矩阵。
 - [x] P1 自动化复验通过：35 PASS / 0 FAIL / 0 GAP。
 - [x] 增加 GitHub 开源许可证、贡献指南、Issue/PR 模板和 CI。
+- [x] P0：修复商店实时 `ShopItem` 读取与确定性通用候选回退；保留 case-002 第 3 波专项建议，自动验收 `39 PASS / 0 FAIL / 0 GAP`。
+- [x] P0：修复暂停和结算入口的双向手柄焦点链及报告面板关闭后的焦点恢复；新包已由 ModLoader 加载并安装三处扩展。
+- [x] P0：修复暂停分析的宿主生命周期，防止空黑框残留；修复商店/结算报告关闭后的手柄焦点恢复，并将取消事件消费、宿主退出和焦点回退纳入 Godot CLI 回归，独立验收 `43 PASS / 0 FAIL / 0 GAP`。
+- [x] P1：已使用既有 profile 的本地 ZIP 路径部署 P0 修复，并保留原 ZIP 备份；未修改 profile 或存档。
+- [x] P1：ModLoader/game log 已确认本地 ZIP 加载、`BrotatoCoach` 初始化和三处 UI extension 安装；无教练相关错误。

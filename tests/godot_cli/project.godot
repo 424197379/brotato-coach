@@ -1,0 +1,9 @@
+; Minimal project used only by tests/run_godot_panel_contract.ps1.
+; It lets Godot 3.6.1 run Control focus/lifecycle checks without touching the game install.
+
+config_version=4
+
+[application]
+
+config/name="BrotatoCoachPanelContract"
+run/main_scene=""

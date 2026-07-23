@@ -48,9 +48,7 @@ func _base_report(input):
 
 func _analyze_shop(snapshot):
 	var report = _base_report(snapshot)
-	var run = snapshot.get("run", {})
-	var character_id = str(run.get("character_id", "unknown"))
-	if character_id == "character_double_illusionist":
+	if _matches_double_illusionist_wave_3(snapshot):
 		_apply_double_illusionist_shop(report, snapshot)
 	else:
 		_apply_generic_shop(report, snapshot)
@@ -192,6 +190,31 @@ func _apply_history_run_review(report, snapshot, history):
 	report["confidence"] = 0.72
 
 
+func _matches_double_illusionist_wave_3(snapshot):
+	var run = snapshot.get("run", {})
+	if str(run.get("character_id", "unknown")) != "character_double_illusionist":
+		return false
+	if int(snapshot.get("completed_wave", -1)) != 3:
+		return false
+	var rules = _rule_pack.get("double_illusionist_wave_3", {})
+	var expected_order = rules.get("shop_order", [])
+	var candidates = _sorted_shop_candidates(snapshot.get("shop", {}).get("candidates", []))
+	if expected_order.empty() or candidates.size() != expected_order.size():
+		return false
+	var expected = {}
+	for item_id in expected_order:
+		expected[str(item_id)] = true
+	var observed = {}
+	for candidate in candidates:
+		if not bool(candidate.get("active", true)):
+			return false
+		var item_id = str(candidate.get("id", ""))
+		if not expected.has(item_id) or observed.has(item_id):
+			return false
+		observed[item_id] = true
+	return observed.size() == expected.size()
+
+
 func _apply_double_illusionist_shop(report, snapshot):
 	var rules = _rule_pack.get("double_illusionist_wave_3", {})
 	report["summary"] = rules.get("summary", {
@@ -246,28 +269,74 @@ func _apply_double_illusionist_shop(report, snapshot):
 func _apply_generic_shop(report, snapshot):
 	var candidates = _sorted_shop_candidates(snapshot.get("shop", {}).get("candidates", []))
 	var materials = int(snapshot.get("player", {}).get("materials", 0))
+	var scored_candidates = []
+	for candidate in candidates:
+		if not bool(candidate.get("active", true)):
+			continue
+		var scored = candidate.duplicate(true)
+		scored["_coach_score"] = _generic_candidate_score(scored, materials)
+		scored_candidates.append(scored)
+	scored_candidates.sort_custom(self, "_sort_by_generic_score")
 	var spent = 0
 	var rank = 1
-	for candidate in candidates:
+	for candidate in scored_candidates:
 		var price = int(candidate.get("price", 0))
+		var score = int(candidate.get("_coach_score", 0))
+		var item_id = str(candidate.get("id", "unknown"))
 		var action = "skip"
-		if spent + price <= materials and str(candidate.get("id", "")).begins_with("weapon_"):
+		if item_id == "unknown" or price <= 0:
+			action = "skip"
+		elif score >= 60 and spent + price <= materials:
 			action = "buy_now"
 			spent += price
-		elif price > 0 and price <= materials:
+		elif score >= 40:
+			action = "lock"
+		elif price <= materials:
 			action = "defer"
 		report["shop_advice"].append({
-			"item_id": str(candidate.get("id", "unknown")),
-			"display_name": str(candidate.get("display_name", candidate.get("id", "未知候选"))),
+			"item_id": item_id,
+			"display_name": str(candidate.get("display_name", item_id)),
 			"action": action,
 			"rank": rank,
 			"price": price,
-			"reasons": [{"rule_id": "shop.generic.weapon_priority", "evidence": ["$.shop.candidates"]}],
-			"reason_codes": ["shop.generic.weapon_priority"],
+			"reasons": [{"rule_id": _generic_reason_code(score), "evidence": ["$.shop.candidates", "$.player.materials"]}],
+			"reason_codes": [_generic_reason_code(score)],
 			"tradeoffs": [],
 			"confidence": 0.55
 		})
 		rank += 1
+	report["reroll_advice"] = {
+		"action": "resolve_scored_candidates_before_reroll",
+		"budget_after_buys": materials - spent,
+		"rule_id": "shop.generic.scored_candidates"
+	}
+
+
+func _generic_candidate_score(candidate, materials):
+	var score = 0
+	var item_id = str(candidate.get("id", ""))
+	if item_id.begins_with("weapon_"):
+		score += 60
+	else:
+		score += 20
+	var sets = candidate.get("sets", [])
+	if typeof(sets) == TYPE_ARRAY and sets.size() > 0:
+		score += 10
+	if bool(candidate.get("locked", false)):
+		score += 5
+	if int(candidate.get("price", 0)) > 0 and int(candidate.get("price", 0)) <= materials:
+		score += 5
+	if item_id == "" or item_id == "unknown":
+		score -= 100
+	return score
+
+
+func _generic_reason_code(score):
+	if score >= 60:
+		return "shop.generic.weapon_priority"
+	if score >= 40:
+		return "shop.generic.lock_for_next_shop"
+	return "shop.generic.affordable_item"
 
 
 func _apply_rule_gaps(report, snapshot, rules):
@@ -423,6 +492,14 @@ func _sort_by_slot(a, b):
 
 func _sort_by_rank(a, b):
 	return int(a.get("rank", 99)) < int(b.get("rank", 99))
+
+
+func _sort_by_generic_score(a, b):
+	var left_score = int(a.get("_coach_score", 0))
+	var right_score = int(b.get("_coach_score", 0))
+	if left_score == right_score:
+		return int(a.get("slot", 0)) < int(b.get("slot", 0))
+	return left_score > right_score
 
 
 func _rank_for(order, item_id, fallback):

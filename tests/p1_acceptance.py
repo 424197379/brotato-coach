@@ -77,6 +77,14 @@ class Acceptance:
         self.check_missing_wave_coverage()
         self.check_jsonl_loader()
         self.check_mod_static()
+        self.check_gdscript_shop_engine_static()
+        self.check_shop_live_shelf_static()
+        self.check_entry_focus_chain_static()
+        self.check_panel_focus_restore_static()
+        self.check_panel_lifecycle_static()
+        self.check_entry_same_parent_focus_guard_static()
+        self.check_panel_readability_static()
+        self.check_godot_cli_panel_contract()
         self.check_runtime_reader_static()
         self.check_modloader_zip_manifest()
         self.check_chinese_panel_static()
@@ -527,6 +535,448 @@ class Acceptance:
         else:
             self.pass_("mod_static_panel_scroll_close_focus")
 
+    def check_gdscript_shop_engine_static(self) -> None:
+        engine_path = MOD_ROOT / "core" / "offline_rule_engine.gd"
+        text = engine_path.read_text(encoding="utf-8")
+        matches_block = self._function_block(text, "_matches_double_illusionist_wave_3")
+        analyze_shop_block = self._function_block(text, "_analyze_shop")
+        generic_block = self._function_block(text, "_apply_generic_shop")
+        sort_block = self._function_block(text, "_sort_by_generic_score")
+        errors = []
+
+        if "_matches_double_illusionist_wave_3(snapshot)" not in analyze_shop_block:
+            errors.append("shop path does not use specialized matcher")
+        if "_apply_double_illusionist_shop(report, snapshot)" not in analyze_shop_block:
+            errors.append("specialized branch not called from shop analyzer")
+        if "else:" not in analyze_shop_block or "_apply_generic_shop(report, snapshot)" not in analyze_shop_block:
+            errors.append("non-specialized shop cases do not fall back to generic shop")
+
+        required_matcher_tokens = [
+            'character_id", "unknown")) != "character_double_illusionist"',
+            'completed_wave", -1)) != 3',
+            "candidates.size() != expected_order.size()",
+            "not bool(candidate.get(\"active\", true))",
+            "not expected.has(item_id) or observed.has(item_id)",
+            "return observed.size() == expected.size()",
+        ]
+        missing_matcher = [token for token in required_matcher_tokens if token not in matches_block]
+        if missing_matcher:
+            errors.append(f"specialized matcher missing {missing_matcher}")
+
+        required_generic_tokens = [
+            "for candidate in candidates:",
+            "if not bool(candidate.get(\"active\", true)):",
+            "continue",
+            "scored_candidates.append(scored)",
+            'scored_candidates.sort_custom(self, "_sort_by_generic_score")',
+            "for candidate in scored_candidates:",
+            "spent + price <= materials",
+            'action = "buy_now"',
+            'action = "lock"',
+            'action = "defer"',
+            'action = "skip"',
+            'report["shop_advice"].append',
+        ]
+        missing_generic = [token for token in required_generic_tokens if token not in generic_block]
+        if missing_generic:
+            errors.append(f"generic shop missing {missing_generic}")
+
+        if "left_score == right_score" not in sort_block or 'a.get("slot", 0)' not in sort_block or "left_score > right_score" not in sort_block:
+            errors.append("generic sort is not fixed score-desc then slot-asc")
+
+        if errors:
+            self.fail("gdscript_shop_engine_static", "; ".join(errors))
+        else:
+            self.pass_(
+                "gdscript_shop_engine_static",
+                "specialized shelf is guarded; generic handles active candidates, sorted score/slot, budget and all actions",
+            )
+
+    def check_shop_live_shelf_static(self) -> None:
+        shop_path = MOD_ROOT / "extensions" / "ui" / "menus" / "shop" / "base_shop.gd"
+        coordinator_path = MOD_ROOT / "core" / "coach_coordinator.gd"
+        text = shop_path.read_text(encoding="utf-8")
+        coordinator = coordinator_path.read_text(encoding="utf-8")
+        live_block = self._function_block(text, "_brotato_coach_live_shop_items")
+        click_block = self._function_block(text, "_brotato_coach_on_shop_pressed")
+        filter_block = self._function_block(text, "_brotato_coach_is_live_shop_item")
+        build_block = self._function_block(coordinator, "build_shop_candidates")
+        errors = []
+
+        if "_brotato_coach_live_shop_items()" not in click_block:
+            errors.append("click handler does not read live ShopItem nodes")
+        if "_get_shop_items_container" not in live_block or "_shop_items" not in live_block:
+            errors.append("live shelf does not prefer current shop container _shop_items")
+        container_index = live_block.find("_get_shop_items_container")
+        fallback_index = live_block.find("get_player_shop_items")
+        if container_index < 0 or fallback_index < 0 or container_index > fallback_index:
+            errors.append("archive-like get_player_shop_items fallback appears before current container path")
+        if "return _brotato_coach_filter_live_shop_items(container.get_children())" not in live_block:
+            errors.append("container-present path does not return filtered live children before fallback")
+        required_filter_tokens = ['"item_data"', '"value"', '"locked"', '"active"']
+        missing_filter = [token for token in required_filter_tokens if token not in filter_block]
+        if missing_filter:
+            errors.append(f"live ShopItem property filter missing {missing_filter}")
+        required_build_tokens = [
+            '_object_get(shop_item, "item_data", null)',
+            '_object_get(shop_item, "active", false)',
+            "if item_data == null or not is_active:",
+            "continue",
+            '_object_get(shop_item, "value", 0)',
+            '_object_get(shop_item, "locked", false)',
+        ]
+        missing_build = [token for token in required_build_tokens if token not in build_block]
+        if missing_build:
+            errors.append(f"coordinator candidate filtering missing {missing_build}")
+
+        if errors:
+            self.fail("shop_live_shelf_static", "; ".join(errors))
+        else:
+            self.pass_("shop_live_shelf_static", "click reads live container ShopItems and coordinator skips inactive/missing item_data")
+
+    def check_entry_focus_chain_static(self) -> None:
+        entry_specs = [
+            {
+                "name": "shop",
+                "path": MOD_ROOT / "extensions" / "ui" / "menus" / "shop" / "base_shop.gd",
+                "anchor": "_brotato_coach_reroll_button",
+                "native": "_get_reroll_button",
+                "direction": "horizontal",
+                "entry": '"shop", _brotato_coach_button',
+            },
+            {
+                "name": "pause",
+                "path": MOD_ROOT / "extensions" / "ui" / "menus" / "ingame" / "ingame_main_menu.gd",
+                "anchor": "_brotato_coach_resume_button",
+                "native": "_resume_button",
+                "direction": "vertical",
+                "entry": '"pause", _brotato_coach_button',
+            },
+            {
+                "name": "run_end",
+                "path": MOD_ROOT / "extensions" / "ui" / "menus" / "run" / "end_run.gd",
+                "anchor": "_brotato_coach_new_run_button",
+                "native": "_new_run_button",
+                "direction": "horizontal",
+                "entry": '"run_end", _brotato_coach_button',
+            },
+        ]
+        errors = []
+        for spec in entry_specs:
+            text = spec["path"].read_text(encoding="utf-8")
+            install_block = self._function_block(text, "_brotato_coach_install_button")
+            press_block = self._function_block(text, "_brotato_coach_on_pressed")
+            if spec["name"] == "shop":
+                press_block = self._function_block(text, "_brotato_coach_on_shop_pressed")
+            anchor_block = self._function_block(text, spec["anchor"])
+            link_name = "_brotato_coach_link_horizontal_focus" if spec["direction"] == "horizontal" else "_brotato_coach_link_vertical_focus"
+            link_block = self._function_block(text, link_name)
+            if spec["anchor"] not in install_block:
+                errors.append(f"{spec['name']}: install does not use native anchor helper")
+            if spec["native"] not in anchor_block:
+                errors.append(f"{spec['name']}: anchor helper does not target expected native button")
+            if "add_child_below_node" not in install_block:
+                errors.append(f"{spec['name']}: does not insert below native anchor")
+            if "focus_mode = Control.FOCUS_ALL" not in install_block:
+                errors.append(f"{spec['name']}: button is not FOCUS_ALL")
+            if spec["entry"] not in press_block or "analyze_and_show" not in press_block:
+                errors.append(f"{spec['name']}: does not pass trigger button to analyze_and_show")
+            for token in ["focus_next", "focus_previous"]:
+                if token not in link_block:
+                    errors.append(f"{spec['name']}: link block missing {token}")
+            if spec["direction"] == "horizontal":
+                for token in ["focus_neighbour_right", "focus_neighbour_left"]:
+                    if token not in link_block:
+                        errors.append(f"{spec['name']}: horizontal link missing {token}")
+            else:
+                for token in ["focus_neighbour_bottom", "focus_neighbour_top"]:
+                    if token not in link_block:
+                        errors.append(f"{spec['name']}: vertical link missing {token}")
+
+        if errors:
+            self.fail("entry_focus_chain_static", "; ".join(errors))
+        else:
+            self.pass_("entry_focus_chain_static", "shop/pause/run_end use native anchors, below-node insertion, bidirectional focus and trigger return")
+
+    def check_panel_focus_restore_static(self) -> None:
+        panel_path = MOD_ROOT / "ui" / "coach_report_panel.gd"
+        coordinator_path = MOD_ROOT / "core" / "coach_coordinator.gd"
+        panel = panel_path.read_text(encoding="utf-8")
+        coordinator = coordinator_path.read_text(encoding="utf-8")
+        set_report = self._function_block(panel, "set_report")
+        focus_block = self._function_block(panel, "_focus_initial_control")
+        input_block = self._function_block(panel, "_input")
+        close_block = self._function_block(panel, "_on_close_pressed")
+        dismiss_block = self._function_block(panel, "_dismiss")
+        finish_block = self._function_block(panel, "_finish_dismiss")
+        show_block = self._function_block(coordinator, "_show_panel")
+        errors = []
+        required_panel_tokens = [
+            "_restore_focus_owner = restore_focus",
+            'call_deferred("_focus_initial_control")',
+        ]
+        missing_set_report = [token for token in required_panel_tokens if token not in set_report]
+        if missing_set_report:
+            errors.append(f"set_report missing {missing_set_report}")
+        if "func set_report(report, restore_focus = null)" not in set_report:
+            errors.append("set_report must accept object restore_focus with '= null' default")
+        if "func set_report(report, restore_focus := null)" in set_report:
+            errors.append("set_report must not use ':= null' for restore_focus")
+        if "_close_button.grab_focus()" not in focus_block:
+            errors.append("close button is not focused when panel opens")
+        required_input_tokens = [
+            "not _closing",
+            "visible",
+            'event.is_action_pressed("ui_cancel")',
+            "_dismiss()",
+            "tree.set_input_as_handled()",
+        ]
+        missing_input = [token for token in required_input_tokens if token not in input_block]
+        if missing_input:
+            errors.append(f"ui_cancel visible-only handled dismiss missing {missing_input}")
+        if "_dismiss()" not in close_block:
+            errors.append("close button does not dismiss panel")
+        required_dismiss_tokens = [
+            "hide()",
+            "set_process_input(false)",
+            'call_deferred("_finish_dismiss"',
+            "_can_restore_focus_owner()",
+        ]
+        missing_dismiss = [token for token in required_dismiss_tokens if token not in dismiss_block]
+        if missing_dismiss:
+            errors.append(f"dismiss does not hide and defer finish atomically: {missing_dismiss}")
+        dismiss_without_comments = "\n".join(
+            line for line in dismiss_block.splitlines() if not line.lstrip().startswith("#")
+        )
+        forbidden_dismiss_tokens = ["queue_free()", "remove_child", "_restore_focus_owner.grab_focus()"]
+        present_forbidden = [token for token in forbidden_dismiss_tokens if token in dismiss_without_comments]
+        if present_forbidden:
+            errors.append(f"dismiss performs deferred-only work directly: {present_forbidden}")
+        required_finish_tokens = [
+            "parent.remove_child(self)",
+            "_restore_focus_owner.grab_focus()",
+            "queue_free()",
+            "_can_restore_focus_owner()",
+        ]
+        missing_finish = [token for token in required_finish_tokens if token not in finish_block]
+        if missing_finish:
+            errors.append(f"finish_dismiss missing {missing_finish}")
+        if "panel.set_report(report, focus_return)" not in show_block:
+            errors.append("coordinator does not pass focus_return into panel")
+
+        if errors:
+            self.fail("panel_focus_restore_static", "; ".join(errors))
+        else:
+            self.pass_("panel_focus_restore_static", "visible ui_cancel is consumed; close/focus restore/free happen through one deferred finish")
+
+    def check_panel_lifecycle_static(self) -> None:
+        panel_path = MOD_ROOT / "ui" / "coach_report_panel.gd"
+        coordinator_path = MOD_ROOT / "core" / "coach_coordinator.gd"
+        panel = panel_path.read_text(encoding="utf-8")
+        coordinator = coordinator_path.read_text(encoding="utf-8")
+        show_block = self._function_block(coordinator, "_show_panel")
+        set_host_block = self._function_block(panel, "set_host")
+        host_visibility_block = self._function_block(panel, "_on_host_visibility_changed")
+        host_tree_block = self._function_block(panel, "_on_host_tree_exiting")
+        errors = []
+
+        required_show_tokens = [
+            "owner.add_child(panel)",
+            "panel.set_host(owner)",
+            "existing.hide()",
+            "existing.queue_free()",
+        ]
+        missing_show = [token for token in required_show_tokens if token not in show_block]
+        if missing_show:
+            errors.append(f"show_panel missing {missing_show}")
+        forbidden_show_tokens = ["get_current_scene", "get_root", "_ui_parent", "current_scene.add_child", "root.add_child"]
+        present_forbidden = [token for token in forbidden_show_tokens if token in show_block]
+        if present_forbidden:
+            errors.append(f"show_panel hosts overlay outside owner: {present_forbidden}")
+
+        required_host_tokens = [
+            '_host.connect("visibility_changed", self, "_on_host_visibility_changed")',
+            '_host.connect("tree_exiting", self, "_on_host_tree_exiting")',
+        ]
+        missing_host = [token for token in required_host_tokens if token not in set_host_block]
+        if missing_host:
+            errors.append(f"set_host missing lifecycle signal wiring {missing_host}")
+        if "_dismiss(false)" not in host_visibility_block or "is_visible_in_tree()" not in host_visibility_block:
+            errors.append("host visibility change does not dismiss without focus restore")
+        if "_dismiss(false)" not in host_tree_block:
+            errors.append("host tree exit does not dismiss without focus restore")
+
+        if errors:
+            self.fail("panel_lifecycle_host_contract_static", "; ".join(errors))
+        else:
+            self.pass_("panel_lifecycle_host_contract_static", "panel is owner-hosted, duplicate panels are hidden/freed, and host hide/tree exit dismisses")
+
+    def check_entry_same_parent_focus_guard_static(self) -> None:
+        entry_specs = [
+            (
+                "shop",
+                MOD_ROOT / "extensions" / "ui" / "menus" / "shop" / "base_shop.gd",
+                "_brotato_coach_link_horizontal_focus",
+            ),
+            (
+                "pause",
+                MOD_ROOT / "extensions" / "ui" / "menus" / "ingame" / "ingame_main_menu.gd",
+                "_brotato_coach_link_vertical_focus",
+            ),
+            (
+                "run_end",
+                MOD_ROOT / "extensions" / "ui" / "menus" / "run" / "end_run.gd",
+                "_brotato_coach_link_horizontal_focus",
+            ),
+        ]
+        errors = []
+        for name, path, link_function in entry_specs:
+            text = path.read_text(encoding="utf-8")
+            link_block = self._function_block(text, link_function)
+            sibling_block = self._function_block(text, "_brotato_coach_is_sibling_focus_control")
+            rewrite_block = self._function_block(text, "_brotato_coach_can_rewrite_focus_path")
+            required_link_tokens = [
+                "_brotato_coach_is_sibling_focus_control(parent, previous)",
+                "_brotato_coach_is_sibling_focus_control(parent, current)",
+                "_brotato_coach_is_sibling_focus_control(parent, following)",
+                '_brotato_coach_can_rewrite_focus_path(previous, "focus_next", parent)',
+                '_brotato_coach_can_rewrite_focus_path(following, "focus_previous", parent)',
+            ]
+            missing_link = [token for token in required_link_tokens if token not in link_block]
+            if missing_link:
+                errors.append(f"{name}: focus link missing same-parent guard {missing_link}")
+            required_sibling_tokens = [
+                "control is Control",
+                "control.is_inside_tree()",
+                "control.get_parent() == parent",
+                "control.focus_mode != Control.FOCUS_NONE",
+            ]
+            missing_sibling = [token for token in required_sibling_tokens if token not in sibling_block]
+            if missing_sibling:
+                errors.append(f"{name}: sibling predicate incomplete {missing_sibling}")
+            if "str(path) == \"\"" not in rewrite_block or "_brotato_coach_is_sibling_focus_control(parent, configured)" not in rewrite_block:
+                errors.append(f"{name}: rewrite guard does not preserve cross-container focus paths")
+
+        if errors:
+            self.fail("entry_same_parent_focus_guard_static", "; ".join(errors))
+        else:
+            self.pass_("entry_same_parent_focus_guard_static", "three entries only rewrite same-parent focus paths and preserve cross-container paths")
+
+    def check_panel_readability_static(self) -> None:
+        panel_path = MOD_ROOT / "ui" / "coach_report_panel.gd"
+        panel = panel_path.read_text(encoding="utf-8")
+        build_block = self._function_block(panel, "_build_ui")
+        errors = []
+        forbidden_font_tokens = [
+            ".ttf",
+            ".otf",
+            ".fnt",
+            ".font",
+            "DynamicFont",
+            "load(",
+            "preload(",
+            "add_font_size_override",
+            "custom_fonts",
+        ]
+        present_font_tokens = [token for token in forbidden_font_tokens if token in panel]
+        if present_font_tokens:
+            errors.append(f"Godot 3.6 default-theme font path violated {present_font_tokens}")
+        required_tokens = [
+            "StyleBoxFlat.new()",
+            "panel_style.bg_color = Color(",
+            "panel_style.border_color = Color(",
+            "panel_style.set_border_width_all(2)",
+            "panel_style.set_corner_radius_all(4)",
+            "panel_style.content_margin_left = 24",
+            "panel_style.content_margin_top = 20",
+            "panel_style.content_margin_right = 24",
+            "panel_style.content_margin_bottom = 22",
+            'content.name = "CoachPanelContent"',
+            'title.name = "CoachReportTitle"',
+            'title.add_color_override("font_color"',
+            '_close_button.name = "CoachReportCloseButton"',
+            '_close_button.add_color_override("font_color"',
+            '_summary_label.name = "CoachReportSummary"',
+            '_summary_label.add_color_override("font_color"',
+            "_summary_label.autowrap = true",
+            "_scroll = ScrollContainer.new()",
+            '_scroll.name = "CoachReportScroll"',
+            "_scroll.focus_mode = Control.FOCUS_ALL",
+            '_body_label.name = "CoachReportText"',
+            "_body_label.fit_content_height = true",
+            '_body_label.add_color_override("default_color"',
+            '_body_label.add_constant_override("line_separation", 8)',
+            "_scroll.rect_min_size = Vector2(520, 248)",
+            "_body_label.rect_min_size = Vector2(520, 248)",
+            "_scroll.add_child(_body_label)",
+        ]
+        missing = [token for token in required_tokens if token not in build_block]
+        if missing:
+            errors.append(f"readability tokens missing {missing}")
+        link_block = self._function_block(panel, "_link_panel_focus")
+        if "_same_focus_container(first, second)" not in link_block:
+            errors.append("panel close/scroll focus link lacks same-parent guard")
+        if "first.get_path_to(second)" not in link_block or "second.get_path_to(first)" not in link_block:
+            errors.append("panel close/scroll focus link is not bidirectional")
+
+        if errors:
+            self.fail("panel_readability_static", "; ".join(errors))
+        else:
+            self.pass_("panel_readability_static", "panel uses explicit readable colors/sizes/spacing/margins and no external font binary")
+
+    def check_godot_cli_panel_contract(self) -> None:
+        script = ROOT / "tests" / "run_godot_panel_contract.ps1"
+        summary_path = REPORT_DIR / "godot-panel-contract" / "summary.json"
+        command = [
+            "powershell",
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            str(script),
+        ]
+        try:
+            proc = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=120)
+        except FileNotFoundError as exc:
+            self.fail("godot_cli_panel_contract", str(exc))
+            return
+        except subprocess.TimeoutExpired:
+            self.fail("godot_cli_panel_contract", "Godot CLI contract timed out after 120s")
+            return
+
+        detail = (proc.stdout.strip() + "\n" + proc.stderr.strip()).strip()
+        if proc.returncode == 0:
+            self.pass_("godot_cli_panel_contract", str(summary_path.relative_to(ROOT)))
+            return
+
+        summary = {}
+        if summary_path.exists():
+            try:
+                summary = json.loads(summary_path.read_text(encoding="utf-8-sig"))
+            except Exception:
+                summary = {}
+        failed_steps = [
+            result.get("name")
+            for result in summary.get("results", [])
+            if int(result.get("exit_code", 1)) != 0 or bool(result.get("has_script_error", False))
+        ]
+        if any(step in {"check_panel", "check_engine"} for step in failed_steps):
+            self.fail("godot_cli_panel_contract", f"parse/check-only failed steps={failed_steps}; {detail}")
+            return
+
+        headless_markers = [
+            "Can't create window",
+            "No available video driver",
+            "display driver",
+            "OpenGL",
+            "GLES",
+            "visual server",
+        ]
+        if failed_steps == ["panel_contract"] and any(marker.lower() in detail.lower() for marker in headless_markers):
+            self.gap("godot_cli_panel_contract", f"Godot headless GUI limitation: {detail}")
+        else:
+            self.fail("godot_cli_panel_contract", f"failed steps={failed_steps}; {detail}")
+
     def check_runtime_reader_static(self) -> None:
         coordinator_path = MOD_ROOT / "core" / "coach_coordinator.gd"
         text = coordinator_path.read_text(encoding="utf-8")
@@ -664,13 +1114,20 @@ class Acceptance:
             if ".git" in path.parts or not path.is_file():
                 continue
             relative = str(path.relative_to(ROOT)).replace("\\", "/")
+            if path.suffix.lower() in {".zip", ".pck", ".exe", ".dll", ".png", ".jpg", ".jpeg", ".webp", ".pyc"}:
+                continue
             if any(term in relative for term in terms):
                 hits.append(f"{relative}:filename")
                 continue
             try:
                 text = path.read_text(encoding="utf-8")
             except UnicodeDecodeError:
-                text = path.read_text(encoding="utf-8", errors="ignore")
+                try:
+                    text = path.read_text(encoding="utf-8", errors="ignore")
+                except OSError:
+                    continue
+            except OSError:
+                continue
             for term in terms:
                 if term in text:
                     hits.append(f"{relative}:contains {term}")
@@ -721,6 +1178,16 @@ class Acceptance:
             if path.is_file():
                 hashes[str(path.relative_to(ROOT)).replace("\\", "/")] = hashlib.sha256(path.read_bytes()).hexdigest()
         return hashes
+
+    def _function_block(self, text: str, function_name: str) -> str:
+        marker = f"func {function_name}"
+        start = text.find(marker)
+        if start < 0:
+            return ""
+        next_func = text.find("\nfunc ", start + len(marker))
+        if next_func < 0:
+            return text[start:]
+        return text[start:next_func]
 
 
 if __name__ == "__main__":

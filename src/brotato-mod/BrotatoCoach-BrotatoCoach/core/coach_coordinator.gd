@@ -5,7 +5,7 @@ const OfflineRuleEngine = preload("res://mods-unpacked/BrotatoCoach-BrotatoCoach
 const CoachReportPanel = preload("res://mods-unpacked/BrotatoCoach-BrotatoCoach/ui/coach_report_panel.gd")
 
 
-func analyze_and_show(owner, snapshot, entrance := "unknown"):
+func analyze_and_show(owner, snapshot, entrance := "unknown", focus_return := null):
 	var recorder = _recorder(owner)
 	if recorder != null:
 		if str(snapshot.get("phase", "")) == "run_end":
@@ -15,7 +15,7 @@ func analyze_and_show(owner, snapshot, entrance := "unknown"):
 	var loader = RulePackLoader.new()
 	var engine = OfflineRuleEngine.new(loader.load_rule_pack())
 	var report = engine.analyze(snapshot)
-	_show_panel(owner, report)
+	_show_panel(owner, report, focus_return)
 
 
 func record_shop_ready(owner, shop_items):
@@ -72,6 +72,11 @@ func build_shop_candidates(shop_items):
 			slot += 1
 			continue
 		var item_data = _object_get(shop_item, "item_data", null)
+		var is_active = bool(_object_get(shop_item, "active", false))
+		# Inactive controls remain in some shop containers after a buy or refresh animation.
+		if item_data == null or not is_active:
+			slot += 1
+			continue
 		var item_id = _resource_id(item_data)
 		candidates.append({
 			"slot": slot,
@@ -81,25 +86,27 @@ func build_shop_candidates(shop_items):
 			"tier": int(_object_get(item_data, "tier", _object_get(shop_item, "tier", 0))),
 			"price": int(_object_get(shop_item, "value", 0)),
 			"locked": bool(_object_get(shop_item, "locked", false)),
-			"active": bool(_object_get(shop_item, "active", true)),
+			"active": is_active,
 			"sets": _string_array(_object_get(item_data, "sets", []))
 		})
 		slot += 1
 	return candidates
 
 
-func _show_panel(owner, report):
-	var parent = _ui_parent(owner)
-	if parent == null:
+func _show_panel(owner, report, focus_return := null):
+	# Keep the overlay owned by the UI that opened it. Scene-root overlays survive
+	# a pause menu closing and can otherwise block the game behind an empty frame.
+	if not is_instance_valid(owner) or not (owner is Control):
 		return
-	var existing = parent.get_node_or_null("BrotatoCoachReportPanel")
+	var existing = owner.get_node_or_null("BrotatoCoachReportPanel")
 	if existing != null:
+		existing.hide()
 		existing.queue_free()
 	var panel = CoachReportPanel.new()
 	panel.name = "BrotatoCoachReportPanel"
-	parent.add_child(panel)
-	panel.set_report(report)
-	panel.grab_focus()
+	owner.add_child(panel)
+	panel.set_host(owner)
+	panel.set_report(report, focus_return)
 
 
 func _recorder(owner):
@@ -110,19 +117,6 @@ func _recorder(owner):
 	if root == null:
 		return null
 	return root.get_node_or_null("BrotatoCoachRecorder")
-
-
-func _ui_parent(owner):
-	var tree = owner.get_tree()
-	if tree == null:
-		return null
-	var root = tree.get_root()
-	if root == null:
-		return null
-	var scene = tree.get_current_scene()
-	if scene != null:
-		return scene
-	return root
 
 
 func _current_wave(owner):
